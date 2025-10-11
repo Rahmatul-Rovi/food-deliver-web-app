@@ -1,0 +1,47 @@
+[
+  {
+    "id": 1,
+    "name": "Fiery Pepperoni Pizza",
+    "price": 14.99,
+    "description": "Spicy pepperoni and extra cheese.",
+    "image": "pizza.jpg"
+  },
+  {
+    "id": 2,
+    "name": "Classic Veggie Burger",
+    "price": 9.50,
+    "description": "Garden fresh patty with special sauce.",
+    "image": "burger.jpg"
+  },
+  {
+    "id": 3,
+    "name": "Chocolate Donut Trio",
+    "price": 5.99,
+    "description": "Our signature 3D rotating dessert.",
+    "image": "donut.jpg"
+  },
+  {
+    "id": 4,
+    "name": "Chicken Tikka Skewers",
+    "price": 11.25,
+    "description": "Marinated chicken cooked to perfection.",
+    "image": "chicken.jpg"
+  },
+  {
+    "id": 1,
+    "name": "Fiery Pepperoni Pizza",
+    "price": 14.99,
+    "description": "Spicy pepperoni and extra cheese.",
+    "image": "pizza.jpg",
+    "category": "main" 
+  },
+  {
+    "id": 3,
+    "name": "Chocolate Donut Trio",
+    "price": 5.99,
+    "description": "Our signature 3D rotating dessert.",
+    "image": "donut.jpg",
+    "category": "dessert" 
+  }
+
+]

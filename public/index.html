@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FOOD3D: Futuristic Delivery App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/style.css"> 
+    <style>
+        body { margin: 0; overflow-x: hidden; font-family: sans-serif; }
+        #container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; }
+        #overlay { position: relative; z-index: 10; min-height: 100vh; background: rgba(26, 32, 44, 0.7); /* Translucent dark background */ }
+        
+    
+        .cart-sidebar { transition: transform 0.3s ease-in-out; }
+        .cart-sidebar.hidden { transform: translateX(100%); }
+    </style>
+</head>
+<body class="bg-gray-900 text-white">
+
+    <div id="container"></div>
+
+    <div id="overlay" class="flex flex-col">
+        
+       <header class="p-4 bg-black/70 shadow-lg sticky top-0 z-20">
+    <div class="flex justify-between items-center max-w-7xl mx-auto">
+        <h1 class="text-3xl font-extrabold tracking-wider text-orange-400">FOOD<span class="text-white">3D</span></h1>
+        <nav class="flex items-center space-x-4">
+            <button onclick="logout()" class="text-gray-300 hover:text-white font-semibold transition">Logout</button>
+            
+            <button id="cart-button" class="bg-orange-600 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded-full flex items-center shadow-lg">
+                <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                Cart (<span id="cart-count">0</span>)
+            </button>
+        </nav>
+    </div>
+</header>
+        <main class="flex-grow pt-10 pb-16">
+            <div class="max-w-7xl mx-auto px-4">
+                
+                <section class="text-center mb-16 py-12 bg-gray-800/70 rounded-xl shadow-2xl">
+                    <h2 class="text-7xl font-black mb-4 drop-shadow-xl text-white">
+                        ORDER FOOD IN <span class="text-orange-400">3D</span>
+                    </h2>
+                    <p class="text-2xl text-gray-300 mb-8">
+                        Experience your dishes like never before.
+                    </p>
+                    <button class="bg-orange-600 hover:bg-orange-700 text-white font-bold py-4 px-10 rounded-full text-xl shadow-2xl transition transform hover:scale-105">
+                        Start Exploring
+                    </button>
+                </section>
+                
+             <section id="menu-section" class="p-8 bg-gray-900/90 rounded-xl shadow-inner"> 
+    <h2 class="text-4xl font-bold mb-8 text-center text-orange-400">Featured Dishes</h2>
+    
+    <div class="flex justify-center space-x-4 mb-10">
+        <button data-category="all" class="filter-btn bg-orange-600/20 hover:bg-orange-600 border border-orange-600 text-white font-semibold py-2 px-6 rounded-full transition duration-200">All Items</button>
+        <button data-category="main" class="filter-btn bg-gray-700/50 hover:bg-orange-600 border border-transparent hover:border-orange-600 text-white py-2 px-6 rounded-full transition duration-200">Main Dishes</button>
+        <button data-category="dessert" class="filter-btn bg-gray-700/50 hover:bg-orange-600 border border-transparent hover:border-orange-600 text-white py-2 px-6 rounded-full transition duration-200">Desserts</button>
+    </div>
+    
+    <div id="menu-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <p class="col-span-full text-center text-gray-400">Loading Menu...</p>
+    </div>
+</section>
+            </div>
+        </main>
+        
+        <footer class="text-center text-sm text-gray-400 p-4 bg-black/70 mt-auto">
+            © 2024 FOOD3D. All rights reserved. (No database, uses Local Storage)
+        </footer>
+    </div>
+    
+    <div id="cart-sidebar" class="cart-sidebar hidden fixed top-0 right-0 w-full md:w-96 h-full bg-gray-800/95 shadow-2xl z-50 p-6 flex flex-col">
+        <div class="flex justify-between items-center border-b border-orange-500 pb-3 mb-4">
+            <h3 class="text-2xl font-bold text-orange-400">Your Cart</h3>
+            <button id="close-cart-btn" class="text-gray-400 hover:text-white text-3xl">&times;</button>
+        </div>
+        
+        <div id="cart-list" class="flex-grow overflow-y-auto space-y-3 mb-4">
+            </div>
+
+        <div class="mt-auto border-t border-gray-700 pt-4">
+            <div class="flex justify-between text-xl font-bold mb-4">
+                <span>Total:</span>
+                <span id="cart-total" class="text-orange-400">$0.00</span>
+            </div>
+            <button id="place-order-btn" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-lg text-lg shadow-lg transition">
+                Place Order (Mock Checkout)
+            </button>
+        </div>
+    </div>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    
+    <script src="js/main.js"></script>
+</body>
+</html>
