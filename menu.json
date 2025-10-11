@@ -1,47 +1,94 @@
 [
   {
     "id": 1,
-    "name": "Fiery Pepperoni Pizza",
-    "price": 14.99,
+    "name": "Kacchi Biriyani",
+    "price": 250,
     "description": "Spicy pepperoni and extra cheese.",
-    "image": "pizza.jpg"
+    "image": "kacchi.jpg",
+     "category": "main" 
   },
   {
     "id": 2,
-    "name": "Classic Veggie Burger",
-    "price": 9.50,
+    "name": "Burger",
+    "price": 200,
     "description": "Garden fresh patty with special sauce.",
     "image": "burger.jpg"
   },
   {
     "id": 3,
-    "name": "Chocolate Donut Trio",
-    "price": 5.99,
+    "name": "Beef Tehari",
+    "price": 200,
     "description": "Our signature 3D rotating dessert.",
-    "image": "donut.jpg"
+    "image": "beef-tehari.jpg",
+    "category": "main"
   },
   {
     "id": 4,
-    "name": "Chicken Tikka Skewers",
-    "price": 11.25,
+    "name": "Fish",
+    "price": 150,
     "description": "Marinated chicken cooked to perfection.",
-    "image": "chicken.jpg"
+    "image": "fish.jpg"
   },
   {
-    "id": 1,
-    "name": "Fiery Pepperoni Pizza",
-    "price": 14.99,
+    "id": 5,
+    "name": "Kala Vuna",
+    "price": 180,
     "description": "Spicy pepperoni and extra cheese.",
-    "image": "pizza.jpg",
+    "image": "kala-vuna.jpg",
     "category": "main" 
   },
   {
-    "id": 3,
-    "name": "Chocolate Donut Trio",
-    "price": 5.99,
+    "id": 6,
+    "name": "Chocolate Donut",
+    "price": 100,
     "description": "Our signature 3D rotating dessert.",
     "image": "donut.jpg",
     "category": "dessert" 
+  },
+{
+    "id": 7,
+    "name": "Noodles",
+    "price": 80,
+    "description": "Marinated chicken cooked to perfection.",
+    "image": "noodles.jpg"
+},
+{
+    "id": 8,
+    "name": "Sandwich",
+    "price": 120,
+    "description": "Marinated chicken cooked to perfection.",
+    "image": "sandwich.jpg"
+  },
+  {
+    "id": 9,
+    "name": "Swarma",
+    "price": 70,
+    "description": "Marinated chicken cooked to perfection.",
+    "image": "swarma.jpg"
+  },
+   {
+    "id": 10,
+    "name": "Vuna Khichuri",
+    "price": 160,
+    "description": "Marinated chicken cooked to perfection.",
+    "image": "vuna-khicuri.jpg",
+    "category": "main"
+  },
+   {
+    "id": 11,
+    "name": "Waffle",
+    "price": 130,
+    "description": "Marinated chicken cooked to perfection.",
+    "image": "waffle.jpg",
+    "category": "dessert"
+  },
+   {
+    "id": 11,
+    "name": "Chocolate Cake",
+    "price": 220,
+    "description": "Marinated chicken cooked to perfection.",
+    "image": "cakes.jpeg",
+    "category": "dessert"
   }
 
 ]

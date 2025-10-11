@@ -223,12 +223,13 @@ function renderMenu(items) {
     let htmlContent = '';
     const menuSection = document.getElementById('menu-list');
 
-    items.forEach(item => {
+     items.forEach(item => {
         htmlContent += `
             <div class="bg-gray-800 p-5 rounded-xl shadow-2xl border-2 border-transparent hover:border-orange-500 transition duration-300 transform hover:scale-[1.02]">
-                <div class="h-32 bg-gray-700 rounded-lg mb-4 flex items-center justify-center text-gray-500">
-                    <span class="text-xl">Image/3D View Placeholder</span>
-                </div>
+                
+                <img src="${item.image}" alt="${item.name}" 
+                     class="h-32 w-full object-cover rounded-lg mb-4">
+                
                 <h3 class="text-2xl font-bold mb-1">${item.name}</h3>
                 <p class="text-gray-400 mb-4">${item.description}</p>
                 
