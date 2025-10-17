@@ -1,34 +1,139 @@
-
 let menuItems = [];
 let cart = [];
 
 // =================================================================
-// I. CONFIGURATION
+// I. CONFIGURATION & AUTHENTICATION FLOW
 // =================================================================
 
-// 1. API URL: Use http://localhost:5000 for local testing
 const API_URL = "http://localhost:5000"; 
+let users = loadUsers();
 
-// public/js/main.js: (Add this to the very top)
-
-// --- Authentication Check ---
-if (localStorage.getItem('food3d_logged_in') !== 'true') {
-    // If not logged in, redirect to the login page (auth.html)
-    window.location.href = '/auth.html'; 
+function loadUsers() {
+    const storedUsers = localStorage.getItem('food3d_users');
+    if (storedUsers) {
+        return JSON.parse(storedUsers);
+    }
+    return { 'user@test.com': 'password123' }; 
 }
 
-// Optional: Add a logout button function to the global scope or a button listener
+function saveUsers() {
+    localStorage.setItem('food3d_users', JSON.stringify(users));
+}
+
+// --- DOM ELEMENTS FOR AUTH/FLOW ---
+const startupPage = document.getElementById('startup-page');
+const mainOverlay = document.getElementById('overlay');
+
+// --- ELEMENTS FOR LOGIN FORM ---
+const loginForm = document.getElementById('login-form');
+const loginEmailInput = document.getElementById('login-email');
+const loginPasswordInput = document.getElementById('login-password');
+const tabLogin = document.getElementById('tab-login');
+
+// --- ELEMENTS FOR REGISTER FORM ---
+const registerForm = document.getElementById('register-form');
+const registerEmailInput = document.getElementById('register-email');
+const registerPasswordInput = document.getElementById('register-password');
+const tabRegister = document.getElementById('tab-register');
+
+
+function showAuthTab(tabName) {
+    if (tabName === 'login') {
+        loginForm.classList.remove('hidden');
+        registerForm.classList.add('hidden');
+        tabLogin.classList.add('active');
+        tabRegister.classList.remove('active');
+    } else {
+        loginForm.classList.add('hidden');
+        registerForm.classList.remove('hidden');
+        tabRegister.classList.add('active');
+        tabLogin.classList.remove('active');
+    }
+}
+
+
+function registerUser() {
+    const email = registerEmailInput.value.trim();
+    const password = registerPasswordInput.value;
+
+    if (!email || !password) {
+        alert("Please enter both email and password for registration.");
+        return;
+    }
+    
+    if (users.hasOwnProperty(email)) {
+        alert(`User '${email}' already exists. Please log in or use a different email.`);
+        return;
+    }
+    
+    users[email] = password;
+    saveUsers();
+    
+    registerEmailInput.value = '';
+    registerPasswordInput.value = '';
+
+    alert("Registration successful! You are now logged in.");
+    
+    loginUser(email, password);
+}
+
+
+function loginUser(email, password) {
+    if (!email) {
+        email = loginEmailInput.value.trim();
+        password = loginPasswordInput.value;
+    }
+    
+    if (!users.hasOwnProperty(email)) {
+        alert("Login failed! User not found. Please register or check your email.");
+        loginPasswordInput.value = '';
+        return;
+    }
+    
+    if (users[email] === password) {
+        localStorage.setItem('food3d_logged_in', 'true');
+        localStorage.setItem('food3d_current_user', email);
+
+        startupPage.classList.add('hidden');
+        mainOverlay.classList.remove('hidden');
+
+        loadMenu(); 
+        
+        document.body.style.overflowY = 'auto'; 
+        
+        if (loginEmailInput) loginEmailInput.value = '';
+        if (loginPasswordInput) loginPasswordInput.value = '';
+
+    } else {
+        alert("Login failed! Incorrect password.");
+        loginPasswordInput.value = '';
+    }
+}
+
+
 function logout() {
     localStorage.removeItem('food3d_logged_in');
-    window.location.href = '/auth.html';
+    localStorage.removeItem('food3d_current_user');
+    
+    mainOverlay.classList.add('hidden');
+    
+    startupPage.classList.remove('hidden');
+    showAuthTab('login'); 
+
+    window.scrollTo(0, 0); 
+    document.body.style.overflowY = 'hidden'; 
 }
 
-// You need to add an actual <button onclick="logout()">Logout</button> 
-// to your index.html header for this to work.
+function scrollToMenu() {
+    const menuSection = document.getElementById('menu-section');
+    if (menuSection) {
+        menuSection.scrollIntoView({ behavior: 'smooth' });
+    }
+}
 
 
 // =================================================================
-// II. DOM ELEMENTS
+// II. DOM ELEMENTS (Existing)
 // =================================================================
 
 const container = document.getElementById('container');
@@ -40,7 +145,7 @@ const menuList = document.getElementById('menu-list');
 
 
 // =================================================================
-// III. 3D RENDER SETUP (Three.js)
+// III. 3D RENDER SETUP (Three.js) - UNCHANGED
 // =================================================================
 
 const scene = new THREE.Scene();
@@ -65,7 +170,6 @@ const pointLight = new THREE.PointLight(0xffffff, 1.5);
 pointLight.position.set(5, 5, 5);
 scene.add(pointLight);
 
-// 3D Model: Torus (Donut)
 const geometry = new THREE.TorusGeometry(1, 0.4, 16, 100);
 const material = new THREE.MeshToonMaterial({ color: 0xff4500 });
 const foodItem = new THREE.Mesh(geometry, material);
@@ -73,15 +177,16 @@ scene.add(foodItem);
 
 camera.position.z = 5;
 
-// --- D. Scroll and Camera Logic ---
 let scrollY = 0;
 let targetX = 0;
 let targetY = 0;
 
 window.addEventListener('scroll', () => {
     scrollY = window.scrollY;
-    targetX = scrollY * 0.0007; 
-    targetY = scrollY * 0.001;
+    if (!mainOverlay.classList.contains('hidden')) { 
+        targetX = scrollY * 0.0007; 
+        targetY = scrollY * 0.001;
+    }
 });
 
 function animate() {
@@ -90,7 +195,6 @@ function animate() {
     foodItem.position.y = Math.sin(Date.now() * 0.001) * 0.5; 
     controls.autoRotate = scrollY === 0; 
 
-    // Apply scroll-based rotation
     foodItem.rotation.x += (targetX - foodItem.rotation.x) * 0.1;
     foodItem.rotation.y += (targetY - foodItem.rotation.y) * 0.1;
     
@@ -108,7 +212,7 @@ animate();
 
 
 // =================================================================
-// IV. CART LOGIC (Local Storage)
+// IV. CART LOGIC (Local Storage) - UNCHANGED
 // =================================================================
 
 function loadCart() {
@@ -129,7 +233,7 @@ function changeItemQuantity(itemId, change) {
     if (itemIndex > -1) {
         cart[itemIndex].quantity += change;
         if (cart[itemIndex].quantity <= 0) {
-            cart.splice(itemIndex, 1); // Remove item if quantity is 0
+            cart.splice(itemIndex, 1);
         }
 
         saveCart();
@@ -188,14 +292,13 @@ function addToCart(itemId) {
 
 
 // =================================================================
-// V. MENU & DATA LOADING
+// V. MENU & DATA LOADING - UNCHANGED
 // =================================================================
 
 async function loadMenu() {
     try {
         menuList.innerHTML = '<p class="col-span-full text-center text-orange-400">Fetching Menu from Server...</p>';
         
-        // Use the defined API_URL
         const response = await fetch(`${API_URL}/api/menu`); 
         
         if (!response.ok) {
@@ -206,9 +309,12 @@ async function loadMenu() {
         
         renderMenu(menuItems); 
         loadCart(); 
-        // Set 'All Items' button as active
-        document.querySelector('.filter-btn[data-category="all"]').classList.add('bg-orange-600');
-        document.querySelector('.filter-btn[data-category="all"]').classList.remove('bg-gray-700/50');
+        
+        const allItemsButton = document.querySelector('.filter-btn[data-category="all"]');
+        if (allItemsButton) {
+            allItemsButton.classList.add('bg-orange-600');
+            allItemsButton.classList.remove('bg-gray-700/50');
+        }
 
     } catch (error) {
         console.error('Failed to load menu:', error);
@@ -223,12 +329,12 @@ function renderMenu(items) {
     let htmlContent = '';
     const menuSection = document.getElementById('menu-list');
 
-     items.forEach(item => {
+    items.forEach(item => {
         htmlContent += `
             <div class="bg-gray-800 p-5 rounded-xl shadow-2xl border-2 border-transparent hover:border-orange-500 transition duration-300 transform hover:scale-[1.02]">
                 
                 <img src="${item.image}" alt="${item.name}" 
-                     class="h-32 w-full object-cover rounded-lg mb-4">
+                    class="h-32 w-full object-cover rounded-lg mb-4">
                 
                 <h3 class="text-2xl font-bold mb-1">${item.name}</h3>
                 <p class="text-gray-400 mb-4">${item.description}</p>
@@ -248,12 +354,36 @@ function renderMenu(items) {
 
 
 // =================================================================
-// VI. EVENT LISTENERS
+// VI. EVENT LISTENERS - FINAL ROBUST VERSION (uses .closest() for reliability)
 // =================================================================
 
-// 1. 'Add to Cart' and Quantity Control buttons
+// Single Listener for ALL dynamically added content (Cart/Filter/Add buttons)
 document.addEventListener('click', (e) => {
     const target = e.target;
+    
+    // 1. FILTER BUTTON LOGIC
+    // Use closest() to find the correct button element even if we click on inner text/span
+    const filterButton = target.closest('.filter-btn');
+    if (filterButton) {
+        // Active class toggle logic
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.classList.remove('bg-orange-600', 'border-orange-600');
+            btn.classList.add('bg-gray-700/50', 'border-transparent');
+        });
+        filterButton.classList.add('bg-orange-600', 'border-orange-600');
+        filterButton.classList.remove('bg-gray-700/50', 'border-transparent');
+        
+        // Filtering logic
+        const category = filterButton.dataset.category;
+        const filteredItems = category === 'all' 
+            ? menuItems 
+            : menuItems.filter(item => item.category === category);
+            
+        renderMenu(filteredItems);
+        return; 
+    }
+    
+    // 2. CART ACTIONS: Add to Cart, Quantity Minus/Plus
     if (target.classList.contains('add-to-cart-btn')) {
         const itemId = parseInt(target.dataset.itemId);
         addToCart(itemId);
@@ -263,27 +393,25 @@ document.addEventListener('click', (e) => {
     } else if (target.classList.contains('qty-plus')) {
         const itemId = parseInt(target.dataset.itemId);
         changeItemQuantity(itemId, 1);
-    }
+    } 
 });
 
-// 2. Cart button (Open)
+// 3. Static Listeners (These should now work because the canvas is non-blocking)
 document.getElementById('cart-button').addEventListener('click', () => {
     cartSidebar.classList.remove('hidden');
 });
 
-// 3. Cart button (Close)
 document.getElementById('close-cart-btn').addEventListener('click', () => {
     cartSidebar.classList.add('hidden');
 });
 
-// 4. Place Order button (Mock Checkout)
 document.getElementById('place-order-btn').addEventListener('click', () => {
     if (cart.length === 0) {
         alert("Your cart is empty. Please add some food items!");
         return;
     }
     const totalAmount = cartTotalSpan.textContent;
-    alert(`Order Placed Successfully!\nTotal Amount: ${totalAmount}\nThank you!`);
+    alert(`Order Placed Successfully!\nTotal Amount: $${totalAmount}\nThank you!`);
     
     cart = [];
     saveCart();
@@ -291,41 +419,22 @@ document.getElementById('place-order-btn').addEventListener('click', () => {
     cartSidebar.classList.add('hidden');
 });
 
-// 5. 'Start Exploring' Button Logic (Scroll to Menu)
-const startExploringBtn = document.querySelector('.bg-orange-600.hover\\:bg-orange-700.text-xl');
-if (startExploringBtn) {
-    startExploringBtn.addEventListener('click', () => {
-        const menuSection = document.getElementById('menu-section');
-        if (menuSection) {
-            menuSection.scrollIntoView({ behavior: 'smooth' });
-        }
-    });
+
+// =================================================================
+// VII. INITIALIZATION - UNCHANGED
+// =================================================================
+
+function initializeApp() {
+    if (localStorage.getItem('food3d_logged_in') === 'true') {
+        startupPage.classList.add('hidden');
+        mainOverlay.classList.remove('hidden');
+        loadMenu(); 
+    } else {
+        startupPage.classList.remove('hidden');
+        mainOverlay.classList.add('hidden');
+        showAuthTab('login');
+        document.body.style.overflowY = 'hidden'; 
+    }
 }
 
-// 6. Menu Filtering Logic
-document.querySelectorAll('.filter-btn').forEach(button => {
-    button.addEventListener('click', (e) => {
-        // Active class toggle logic
-        document.querySelectorAll('.filter-btn').forEach(btn => {
-            btn.classList.remove('bg-orange-600', 'border-orange-600');
-            btn.classList.add('bg-gray-700/50', 'border-transparent');
-        });
-        e.target.classList.add('bg-orange-600', 'border-orange-600');
-        e.target.classList.remove('bg-gray-700/50', 'border-transparent');
-        
-        // Filtering logic
-        const category = e.target.dataset.category;
-        const filteredItems = category === 'all' 
-            ? menuItems 
-            : menuItems.filter(item => item.category === category);
-            
-        renderMenu(filteredItems);
-    });
-});
-
-
-// =================================================================
-// VII. INITIALIZATION
-// =================================================================
-
-loadMenu();
+initializeApp();
