@@ -1,0 +1,19 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "api/**/*.js",    // Path to your backend functions
+      "use": "@vercel/node"    // Vercel Node.js serverless function
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",      // Routes for your API functions
+      "dest": "/api/$1"
+    }
+  ],
+  "env": {
+    "MY_ENV_VARIABLE": "your-value",  // Optional: add environment variables here
+    "ANOTHER_VARIABLE": "another-value"
+  }
+}
